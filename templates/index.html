@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Subir foto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <main class="page">
+      <section class="upload-panel" aria-labelledby="page-title">
+        <div class="intro">
+          <p class="eyebrow">Registro de imagen</p>
+          <h1 id="page-title">Sube una foto</h1>
+          <p>Selecciona una imagen, clasificala y agrega comentarios para guardar el contexto.</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="messages" role="status" aria-live="polite">
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form class="upload-form" method="post" enctype="multipart/form-data">
+          <div class="form-field">
+            <label for="category">Tipo</label>
+            <select id="category" name="category" required>
+              <option value="" disabled selected>Selecciona una opcion</option>
+              {% for option in category_options %}
+                <option value="{{ option }}">{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <label class="file-picker" for="photo">
+            <span class="file-picker__title">Elegir foto</span>
+            <span class="file-picker__hint">PNG, JPG, GIF o WEBP hasta 8 MB</span>
+            <input id="photo" name="photo" type="file" accept="image/png,image/jpeg,image/gif,image/webp" required>
+          </label>
+
+          <div class="form-field">
+            <label for="comments">Comentarios</label>
+            <textarea id="comments" name="comments" rows="5" placeholder="Escribe tus comentarios aqui"></textarea>
+          </div>
+
+          <button type="submit">Subir imagen</button>
+        </form>
+
+        {% if image_url %}
+          <section class="submission-summary" aria-label="Resumen de la carga">
+            <div>
+              <span>Tipo</span>
+              <strong>{{ selected_category }}</strong>
+            </div>
+            <div>
+              <span>Comentarios</span>
+              <p>{{ comments or "Sin comentarios" }}</p>
+            </div>
+          </section>
+
+          <figure class="preview">
+            <img src="{{ image_url }}" alt="Foto subida por el usuario">
+            <figcaption>Vista previa de la imagen subida</figcaption>
+          </figure>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
